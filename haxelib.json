@@ -1,0 +1,11 @@
+{
+  "name": "kit.macro",
+  "license": "MIT",
+  "classPath": "src",
+  "contributors": ["wartman"],
+  "version": "0.0.1",
+  "releasenote": "Initial release",
+  "dependencies": {
+    "kit": "0.1.0"
+  }
+}
