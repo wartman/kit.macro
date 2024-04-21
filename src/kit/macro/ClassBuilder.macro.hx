@@ -4,35 +4,39 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
 
+using Kit;
 using Lambda;
 using haxe.macro.Tools;
-
-typedef PropField = {
-	public final name:String;
-	public final type:ComplexType;
-	public final optional:Bool;
-}
 
 class ClassBuilder {
 	public static function fromContext() {
 		return new ClassBuilder({
 			type: Context.getLocalType(),
 			fields: Context.getBuildFields(),
-			builders: []
+			parsers: []
 		});
 	}
 
 	final type:Type;
-	final builders:Array<Builder>;
+	final parsers:Array<Parser>;
 	final fields:ClassFieldCollection;
 
-	var hookCollection:Map<BuilderHookName, Array<Expr>> = [];
-	var propCollection:Map<BuilderPropertyCategory, Array<Field>> = [];
+	var hookCollection:Array<Hook> = [];
 
 	public function new(options) {
-		this.builders = options.builders;
+		this.parsers = options.parsers;
 		this.fields = new ClassFieldCollection(options.fields);
 		this.type = options.type;
+	}
+
+	public function hook(name):Hook {
+		return hookCollection.find(hook -> hook.name == name)
+			.toMaybe()
+			.or(() -> {
+				var hook = new Hook(name);
+				hookCollection.push(hook);
+				hook;
+			});
 	}
 
 	public function getType() {
@@ -72,33 +76,6 @@ class ClassBuilder {
 		return this;
 	}
 
-	public function addHook(key:BuilderHookName, ...exprs:Expr) {
-		var hooks = hookCollection.get(key) ?? [];
-		hooks = hooks.concat(exprs);
-		hookCollection.set(key, hooks);
-	}
-
-	public function addProp(category:BuilderPropertyCategory, ...newFields:PropField) {
-		var pos = (macro null).pos;
-		var props = propCollection.get(category) ?? [];
-		var fields:Array<Field> = newFields.toArray().map(f -> ({
-			name: f.name,
-			kind: FVar(f.type),
-			meta: f.optional ? [{name: ':optional', pos: pos}] : [],
-			pos: pos
-		} : Field));
-		props = props.concat(fields);
-		propCollection.set(category, props);
-	}
-
-	public function getHook(key) {
-		return hookCollection.get(key) ?? [];
-	}
-
-	public function getProps(category:BuilderPropertyCategory) {
-		return propCollection.get(category) ?? [];
-	}
-
 	public function findField(name:String):Maybe<Field> {
 		return fields.findField(name);
 	}
@@ -114,8 +91,8 @@ class ClassBuilder {
 		return fields.export();
 	}
 
-	function apply(priority:BuilderPriority) {
-		var selected = builders.filter(b -> b.priority == priority);
+	function apply(priority:Priority) {
+		var selected = parsers.filter(b -> b.priority == priority);
 		for (builder in selected) builder.apply(this);
 	}
 }

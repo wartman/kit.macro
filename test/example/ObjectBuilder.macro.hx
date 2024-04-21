@@ -1,13 +1,18 @@
 package example;
 
-import kit.macro.builder.*;
+import kit.macro.parser.*;
 import kit.macro.ClassBuilderFactory;
 
 final builder = new ClassBuilderFactory([
-	new AutoInitializedFieldBuilder('auto'),
-	new PropertyBuilder(),
-	new ConstructorBuilder(),
-	new JsonSerializerBuilder()
+	new AutoInitializedFieldParser({
+		meta: 'auto',
+		hook: Init
+	}),
+	new ConstructorParser({
+		hook: Init
+	}),
+	new PropertyParser(),
+	new JsonSerializerParser()
 ]);
 
 function build() {

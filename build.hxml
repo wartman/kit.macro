@@ -3,6 +3,11 @@
 
 -lib kit
 
+-D js-es=6
+-D analyzer-optimize
+
+--dce full
+
 -main Run
 
 -js dist/test.js

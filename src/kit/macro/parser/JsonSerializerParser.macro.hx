@@ -1,4 +1,4 @@
-package kit.macro.builder;
+package kit.macro.parser;
 
 import haxe.macro.Expr;
 import haxe.macro.Context;
@@ -7,7 +7,7 @@ using Lambda;
 using haxe.macro.Tools;
 using kit.macro.Tools;
 
-typedef JsonSerializerBuilderOptions = {
+typedef JsonSerializerParserOptions = {
 	public final ?constructorAccessor:Expr;
 	public final ?returnType:ComplexType;
 }
@@ -19,10 +19,10 @@ typedef JsonSerializerHook = {
 
 final jsonSerializableMarker = ':kit.jsonSerializable';
 
-class JsonSerializerBuilder implements Builder {
-	public final priority:BuilderPriority = Late;
+class JsonSerializerParser implements Parser {
+	public final priority:Priority = Late;
 
-	final options:JsonSerializerBuilderOptions;
+	final options:JsonSerializerParserOptions;
 
 	public function new(?options) {
 		this.options = options ?? {};
@@ -32,7 +32,7 @@ class JsonSerializerBuilder implements Builder {
 		builder.getClass().meta.add(jsonSerializableMarker, [], Context.currentPos());
 
 		var ret = options.returnType ?? builder.getComplexType();
-		var fields = builder.getProps(ConstructorProperty);
+		var fields = builder.hook(Init).getProps();
 		var serializer:Array<ObjectField> = [];
 		var deserializer:Array<ObjectField> = [];
 

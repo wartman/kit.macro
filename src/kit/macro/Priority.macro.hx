@@ -1,6 +1,6 @@
 package kit.macro;
 
-enum BuilderPriority {
+enum Priority {
 	Before;
 	Normal;
 	Late;

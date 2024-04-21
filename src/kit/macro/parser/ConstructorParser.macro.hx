@@ -1,17 +1,17 @@
-package kit.macro.builder;
+package kit.macro.parser;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import kit.macro.Hook;
 
 using haxe.macro.Tools;
 using kit.macro.Tools;
 
-typedef ConstructorBuilderOptions = {
-	public final ?initHook:BuilderHookName;
-	public final ?lateInitHook:BuilderHookName;
-	public final ?propertyCategory:BuilderPropertyCategory;
+typedef ConstructorParserOptions = {
+	public final ?hook:HookName;
+	public final ?lateHook:HookName;
 	public final ?privateConstructor:Bool;
-	public final ?customBuilder:(options:{
+	public final ?customParser:(options:{
 		builder:ClassBuilder,
 		props:ComplexType,
 		previousExpr:Maybe<Expr>,
@@ -20,19 +20,19 @@ typedef ConstructorBuilderOptions = {
 	}) -> Function;
 }
 
-class ConstructorBuilder implements Builder {
-	public final priority:BuilderPriority = Late;
+class ConstructorParser implements Parser {
+	public final priority:Priority = Late;
 
-	final options:ConstructorBuilderOptions;
+	final options:ConstructorParserOptions;
 
 	public function new(?options) {
 		this.options = options ?? {};
 	}
 
 	public function apply(builder:ClassBuilder) {
-		var props = builder.getProps(options.propertyCategory ?? ConstructorProperty);
-		var init = builder.getHook(options.initHook ?? InitHook);
-		var late = builder.getHook(options.lateInitHook ?? LateInitHook);
+		var init = builder.hook(options.hook ?? Init);
+		var late = builder.hook(options.lateHook ?? LateInit);
+		var props = init.getProps().concat(late.getProps());
 		var propsType:ComplexType = TAnonymous(props);
 		var currentConstructor = builder.findField('new');
 		var previousConstructorExpr:Maybe<Expr> = switch currentConstructor {
@@ -56,11 +56,11 @@ class ConstructorBuilder implements Builder {
 			case None:
 				None;
 		}
-		var func:Function = switch options.customBuilder {
+		var func:Function = switch options.customParser {
 			case null:
 				(macro function(props:$propsType) {
-					@:mergeBlock $b{init};
-					@:mergeBlock $b{late};
+					@:mergeBlock $b{init.getExprs()};
+					@:mergeBlock $b{late.getExprs()};
 					${
 						switch previousConstructorExpr {
 							case Some(expr): expr;
@@ -73,8 +73,8 @@ class ConstructorBuilder implements Builder {
 					builder: builder,
 					props: propsType,
 					previousExpr: previousConstructorExpr,
-					inits: macro @:mergeBlock $b{init},
-					lateInits: macro @:mergeBlock $b{late},
+					inits: macro @:mergeBlock $b{init.getExprs()},
+					lateInits: macro @:mergeBlock $b{late.getExprs()},
 				});
 		}
 
