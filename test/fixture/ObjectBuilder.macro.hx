@@ -1,4 +1,4 @@
-package example;
+package fixture;
 
 import kit.macro.parser.*;
 import kit.macro.ClassBuilderFactory;

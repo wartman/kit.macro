@@ -1,15 +1,14 @@
-import example.Object;
+import kit.spec.Runner;
+import kit.spec.reporter.ConsoleReporter;
 
 function main() {
-	var test = new Test({
-		name: 'foo',
-		lastName: 'bar'
-	});
-	trace(test.fullName);
-}
+	var runner = new Runner();
 
-class Test implements Object {
-	@:auto public final name:String;
-	@:auto public final lastName:String;
-	@:prop(get = name + ' ' + lastName) public final fullName:String;
+	runner.addReporter(new ConsoleReporter({
+		verbose: true,
+		trackProgress: true
+	}));
+	runner.add(kit.macro.suite.BasicsSuite);
+
+	runner.run();
 }
