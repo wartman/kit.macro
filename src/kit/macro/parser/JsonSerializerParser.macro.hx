@@ -67,7 +67,12 @@ class JsonSerializerParser implements Parser {
 				}
 		};
 
-		builder.addField(constructors.getField('fromJson').unwrap().applyParameters(builder.getClass().params.toTypeParamDecl()));
+		var clsParams = builder.getClass().params.toTypeParamDecl();
+		var fromJson = constructors
+			.getField('fromJson')
+			.unwrap()
+			.applyParameters(clsParams);
+		builder.addField(fromJson);
 
 		builder.add(macro class {
 			public function toJson():Dynamic {

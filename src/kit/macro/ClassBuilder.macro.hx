@@ -30,7 +30,8 @@ class ClassBuilder {
 	}
 
 	public function hook(name):Hook {
-		return hookCollection.find(hook -> hook.name == name)
+		return hookCollection
+			.find(hook -> hook.name == name)
 			.toMaybe()
 			.or(() -> {
 				var hook = new Hook(name);
