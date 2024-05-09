@@ -10,9 +10,11 @@ using kit.macro.Tools;
 typedef JsonSerializerParserOptions = {
 	public final ?constructorAccessor:Expr;
 	public final ?returnType:ComplexType;
-	// @todo: Clean this option up?
-	public final ?customParser:(name:String, t:ComplexType,
-		parser:(access:Expr, name:String, t:ComplexType) -> JsonSerializerHook) -> Maybe<JsonSerializerHook>;
+	public final ?customParser:(options:{
+		name:String,
+		type:ComplexType,
+		parser:(access:Expr, name:String, t:ComplexType) -> JsonSerializerHook
+	}) -> Maybe<JsonSerializerHook>;
 }
 
 typedef JsonSerializerHook = {
@@ -136,7 +138,11 @@ class JsonSerializerParser implements Parser {
 						Context.error('Invalid arguments', meta.pos);
 				}
 
-				if (options.customParser != null) switch options.customParser(name, t, (access, name, t) -> parseExpr(access, name, t, pos)) {
+				if (options.customParser != null) switch options.customParser({
+					name: name,
+					type: t,
+					parser: (access, name, t) -> parseExpr(access, name, t, pos)
+				}) {
 					case Some(hook): return hook;
 					case None:
 				}
