@@ -128,14 +128,3 @@ function extractString(e:Expr):String {
 		default: Context.error('Expected a string', e.pos);
 	}
 }
-
-function isModel(t:ComplexType) {
-	return Context.unify(t.toType(), (macro :pine.Model).toType());
-}
-
-function isSignal(t:ComplexType) {
-	return switch t.toType().toComplexType() {
-		case macro :pine.signal.Signal<$_>: true;
-		default: false;
-	}
-}

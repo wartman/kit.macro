@@ -2,7 +2,7 @@ package kit.macro;
 
 import haxe.macro.Expr;
 
-enum abstract HookName(String) {
+enum abstract HookName(String) from String {
 	final Init = 'init';
 	final LateInit = 'init:late';
 	// @todo: more?
