@@ -6,7 +6,7 @@ Macro tools for Haxe
 Usage
 -----
 
-Kit Macros are build around composable `BuildSteps` which can be used to build classes. This should help make macros more reusable and help with 
+Kit Macros are build around composable `BuildSteps` which can be used to build classes.
 
 ```haxe
 // in "ObjectBuilder.hx":
