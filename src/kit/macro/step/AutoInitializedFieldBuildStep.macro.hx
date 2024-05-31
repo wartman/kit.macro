@@ -1,19 +1,17 @@
-package kit.macro.parser;
+package kit.macro.step;
 
 import kit.macro.Hook;
 import haxe.macro.Expr;
 
 using kit.macro.Tools;
 
-typedef AutoInitializedFieldParserOptions = {
-	public final meta:String;
-	public final ?hook:HookName;
-}
-
-class AutoInitializedFieldParser implements Parser {
+class AutoInitializedFieldBuildStep implements BuildStep {
 	public final priority:Priority = Before;
 
-	final options:AutoInitializedFieldParserOptions;
+	final options:{
+		public final meta:String;
+		public final ?hook:HookName;
+	};
 
 	public function new(options) {
 		this.options = options;

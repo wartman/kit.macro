@@ -13,18 +13,18 @@ class ClassBuilder {
 		return new ClassBuilder({
 			type: Context.getLocalType(),
 			fields: Context.getBuildFields(),
-			parsers: []
+			steps: []
 		});
 	}
 
 	final type:Type;
-	final parsers:Array<Parser>;
+	final steps:Array<BuildStep>;
 	final fields:ClassFieldCollection;
 
 	var hookCollection:Array<Hook> = [];
 
 	public function new(options) {
-		this.parsers = options.parsers;
+		this.steps = options.steps;
 		this.fields = new ClassFieldCollection(options.fields);
 		this.type = options.type;
 	}
@@ -93,7 +93,7 @@ class ClassBuilder {
 	}
 
 	function apply(priority:Priority) {
-		var selected = parsers.filter(b -> b.priority == priority);
+		var selected = steps.filter(b -> b.priority == priority);
 		for (builder in selected) builder.apply(this);
 	}
 }

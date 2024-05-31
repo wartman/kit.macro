@@ -1,4 +1,4 @@
-package kit.macro.parser;
+package kit.macro.step;
 
 import haxe.macro.Expr;
 import haxe.macro.Context;
@@ -7,7 +7,7 @@ using Lambda;
 using haxe.macro.Tools;
 using kit.macro.Tools;
 
-typedef JsonSerializerParserOptions = {
+typedef JsonSerializerBuildStepOptions = {
 	public final ?constructorAccessor:Expr;
 	public final ?returnType:ComplexType;
 	public final ?customParser:(options:{
@@ -22,10 +22,10 @@ typedef JsonSerializerHook = {
 	public final deserializer:Expr;
 }
 
-class JsonSerializerParser implements Parser {
+class JsonSerializerBuildStep implements BuildStep {
 	public final priority:Priority = Late;
 
-	final options:JsonSerializerParserOptions;
+	final options:JsonSerializerBuildStepOptions;
 
 	public function new(?options) {
 		this.options = options ?? {};

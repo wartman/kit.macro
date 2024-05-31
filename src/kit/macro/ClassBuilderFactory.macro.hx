@@ -3,21 +3,21 @@ package kit.macro;
 import haxe.macro.Context;
 
 class ClassBuilderFactory {
-	final parsers:Array<Parser>;
+	final steps:Array<BuildStep>;
 
-	public function new(parsers) {
-		this.parsers = parsers;
+	public function new(steps) {
+		this.steps = steps;
 	}
 
-	public function withParsers(...parser:Parser) {
-		return new ClassBuilderFactory(parsers.concat(parser));
+	public function withSteps(...step:BuildStep) {
+		return new ClassBuilderFactory(steps.concat(step));
 	}
 
 	public function from(options) {
 		return new ClassBuilder({
 			type: options.type,
 			fields: options.fields,
-			parsers: parsers
+			steps: steps
 		});
 	}
 

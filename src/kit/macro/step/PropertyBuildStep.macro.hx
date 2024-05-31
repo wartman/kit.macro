@@ -1,10 +1,10 @@
-package kit.macro.parser;
+package kit.macro.step;
 
 import haxe.macro.Expr;
 
 using kit.macro.Tools;
 
-class PropertyParser implements Parser {
+class PropertyBuildStep implements BuildStep {
 	public final priority:Priority = Before;
 
 	public function new() {}

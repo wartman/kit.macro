@@ -1,6 +1,6 @@
 package kit.macro;
 
-interface Parser {
+interface BuildStep {
 	public final priority:Priority;
 	public function apply(builder:ClassBuilder):Void;
 }

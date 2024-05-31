@@ -1,4 +1,4 @@
-package kit.macro.parser;
+package kit.macro.step;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -7,7 +7,7 @@ import kit.macro.Hook;
 using haxe.macro.Tools;
 using kit.macro.Tools;
 
-typedef ConstructorParserOptions = {
+typedef ConstructorBuilderStep = {
 	public final ?hook:HookName;
 	public final ?lateHook:HookName;
 	public final ?privateConstructor:Bool;
@@ -20,10 +20,10 @@ typedef ConstructorParserOptions = {
 	}) -> Function;
 }
 
-class ConstructorParser implements Parser {
+class ConstructorBuildStep implements BuildStep {
 	public final priority:Priority = Late;
 
-	final options:ConstructorParserOptions;
+	final options:ConstructorBuilderStep;
 
 	public function new(?options) {
 		this.options = options ?? {};
